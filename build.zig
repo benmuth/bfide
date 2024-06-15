@@ -1,7 +1,7 @@
 const std = @import("std");
 
 pub fn build(b: *std.Build) void {
-    const game_only = b.option(bool, "game_only", "only build game") orelse false;
+    const editor_only = b.option(bool, "editor_only", "only build editor") orelse false;
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
@@ -15,26 +15,26 @@ pub fn build(b: *std.Build) void {
         .shared = true,
     });
 
-    const game_lib = b.addSharedLibrary(.{
-        .name = "game",
-        .root_source_file = .{ .src_path = .{ .sub_path = "game.zig", .owner = b } },
+    const editor_lib = b.addSharedLibrary(.{
+        .name = "editor",
+        .root_source_file = .{ .src_path = .{ .sub_path = "editor.zig", .owner = b } },
         .target = target,
         .optimize = optimize,
         .version = .{ .major = 1, .minor = 0, .patch = 0 },
     });
 
-    game_lib.linkLibrary(raylib_dep.artifact("raylib"));
-    game_lib.linkFramework("CoreVideo");
-    game_lib.linkFramework("IOKit");
-    game_lib.linkFramework("Cocoa");
-    game_lib.linkFramework("GLUT");
-    game_lib.linkFramework("OpenGL");
-    game_lib.linkLibC();
+    editor_lib.linkLibrary(raylib_dep.artifact("raylib"));
+    editor_lib.linkFramework("CoreVideo");
+    editor_lib.linkFramework("IOKit");
+    editor_lib.linkFramework("Cocoa");
+    editor_lib.linkFramework("GLUT");
+    editor_lib.linkFramework("OpenGL");
+    editor_lib.linkLibC();
 
-    b.installArtifact(game_lib);
+    b.installArtifact(editor_lib);
 
-    // recompile the whole thing if not passed '-Dgame_only=true'
-    if (!game_only) {
+    // recompile the whole thing if not passed '-editor_only=true'
+    if (!editor_only) {
         const exe = b.addExecutable(.{
             .name = "no_hotreload",
             .root_source_file = .{ .src_path = .{ .sub_path = "main.zig", .owner = b } },
