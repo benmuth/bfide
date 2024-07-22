@@ -44,6 +44,7 @@ pub fn main() !void {
             loadEditorDll() catch @panic("failed to load");
             reload(editor_state);
         }
+        update(editor_state);
         draw(editor_state);
     }
 
